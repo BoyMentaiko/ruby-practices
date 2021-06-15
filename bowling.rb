@@ -10,25 +10,19 @@ scores.each do |t|
   end
 end
 
-frames = shots.each_slice(2).to_a do |t| # 配列内の要素を2つずつ渡す
-  frames << t
-end
+frames = shots.each_slice(2).to_a
 
 point = frames.each_with_index.sum do |frame, i| #フレーム数をカウントする
   if i > 8 || frame.sum < 10
     frame.sum
   elsif frame[0] == 10
-    extra_point = frames[i.next]
-    frame_point = frame.sum + extra_point.sum
-    if extra_point[0] == 10
-      double_extra_point = frames[i.next.next] # ダブルの場合は20点と次の次のフレームの1投目を加算する
-      frame_point + double_extra_point[0]
-    else
-      frame_point
-    end
+    next_frame_shots = frames[i.next]
+    after_next_frame = frame.sum + next_frame_shots.sum
+    after_next_frame += frames[i.next.next][0] if next_frame_shots[0] == 10
+    after_next_frame
   elsif frame.sum == 10
-    extra_point = frames[i.next]
-    frame.sum + extra_point[0]
+    next_frame_shots = frames[i.next]
+    frame.sum + next_frame_shots[0]
   end
 end
 
